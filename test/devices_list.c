@@ -250,4 +250,5 @@ int main(int argc, char const *argv[])
     list_foreach(paired_dev_list,change_dev_seq,input_data);
     
     list_foreach(paired_dev_list,get_device_info,input_data);
+    // test commit
 }
