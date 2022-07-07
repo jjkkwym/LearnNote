@@ -4,3 +4,4 @@ project(better_coder)
 
 add_subdirectory(libs)
 add_subdirectory(test)
+add_subdirectory(algorithm)
