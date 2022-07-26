@@ -1,8 +1,9 @@
 
-# link_libraries(cJSON)
-# link_libraries(elog)
-# link_libraries(list)
-# link_libraries(utils_standard_c)
+link_libraries(cJSON)
+link_libraries(elog)
+link_libraries(list)
+link_libraries(utils_standard_c)
+
 message("current dir:${CMAKE_CURRENT_SOURCE_DIR}")
 #file(GLOB_RECURSE mains ${CMAKE_CURRENT_SOURCE_DIR}  *.c *.cpp)
 file(GLOB main_files *.c *.cpp)
@@ -10,7 +11,7 @@ foreach(main_file ${main_files})
     message("file:${file}")
     get_filename_component(exec_name ${main_file} NAME)
     add_executable(${exec_name} ${main_file})
-    target_link_libraries( ${exec_name} ${cJSON} ${elog} ${list} ${utils_standard_c} )
+    #target_link_libraries( ${exec_name} cJSON elog list utils_standard_c)
     
 endforeach()
 
