@@ -1,0 +1,39 @@
+{
+    "serial_setting":{
+        "device": "/dev/ttyUSB0",
+        "baudrate": 115200
+    },
+    "target_addr": "20011500D5AF",
+    "cammand group": [
+        {
+            "cmd": "INQU",
+            "params": [
+                "2"
+            ]
+        },
+        {
+            "cmd": "A2DPCONN",
+            "params": [
+                ""
+            ]
+        },
+        {
+            "cmd": "A2DPDISC",
+            "params": [
+                ""
+            ]
+        },
+        {
+            "cmd": "A2DP",
+            "params": [
+                ""
+            ]
+        },
+        {
+            "cmd": "INQU",
+            "params": [
+                ""
+            ]
+        }
+    ]
+}
