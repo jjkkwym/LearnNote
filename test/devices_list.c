@@ -13,6 +13,7 @@ typedef struct
 {
     char name[32];
     uint8_t bd_addr[6];
+    uint8_t link_key[32];
 }dev_info_t;
 
 void dev_info_list_free_handler(void *data)
@@ -26,7 +27,8 @@ bool get_device_info(void *data,void *context)
     dev_info_t *dev_info = data;
     assert(data);
     log_i("name:%s",dev_info->name);
-    log_hexdump("dev info",dev_info->bd_addr,6);   
+    log_hexdump("dev addr",dev_info->bd_addr,6);   
+    log_hexdump("dev link key:",dev_info->link_key,sizeof(dev_info->link_key));   
     return true;
 }
 
@@ -42,7 +44,6 @@ bool change_dev_seq(void *data,void *context)
         log_i("change seq");
         list_delete(paired_dev_list,data);
         list_prepend(paired_dev_list,data);
-    
         //return false;
     }
 
@@ -200,28 +201,29 @@ void create_default_paired_dev(void)
     cJSON_AddItemToArray(dev_list,dev1);
     cJSON_AddStringToObject(dev1,"name","dev1");
     cJSON_AddStringToObject(dev1,"bd_addr","01:01:01:01:01:01");
+    cJSON_AddStringToObject(dev1,"link key","1234567890123456789012");
     cJSON *dev2 = cJSON_CreateObject();
     cJSON_AddItemToArray(dev_list,dev2);
     cJSON_AddStringToObject(dev2,"name","dev2");
     cJSON_AddStringToObject(dev2,"bd_addr","02:01:01:01:01:01");
+    cJSON_AddStringToObject(dev2,"link key","1234567890123456789012");
     cJSON *dev3 = cJSON_CreateObject();
     cJSON_AddItemToArray(dev_list,dev3);
     cJSON_AddStringToObject(dev3,"name","dev3");
     cJSON_AddStringToObject(dev3,"bd_addr","03:01:01:01:01:01");
+    cJSON_AddStringToObject(dev3,"link key","1234567890123456789012");
     cJSON *dev4 = cJSON_CreateObject();
     cJSON_AddItemToArray(dev_list,dev4);
     cJSON_AddStringToObject(dev4,"name","dev4");
     cJSON_AddStringToObject(dev4,"bd_addr","04:01:01:01:01:01");
+    cJSON_AddStringToObject(dev4,"link key","1234567890123456789012");
     cJSON *dev5 = cJSON_CreateObject();
     cJSON_AddItemToArray(dev_list,dev5);
     cJSON_AddStringToObject(dev5,"name","dev5");
     cJSON_AddStringToObject(dev5,"bd_addr","05:01:01:01:01:01");
+    cJSON_AddStringToObject(dev5,"link key","1234567890123456789012");
     log_i("%s",cJSON_Print(root));
-    if(!is_file_exist("paired_dev.json"))
-    {
-        //remove("paired_dev.json");
-        write_file("paired_dev.json",cJSON_Print(root));
-    }
+    write_file("paired_dev.json",cJSON_Print(root));
     cJSON_Delete(root);
 }
 
@@ -229,11 +231,44 @@ void create_default_paired_dev(void)
 
 void paired_dev_init(void)
 {
-    create_default_paired_dev();
+    //if file not exist,create default paired dev
+    if(!is_file_exist("paired_dev.json"))
+    {
+        create_default_paired_dev();
+    }
     char json_str[1024];
     read_file("paired_dev.json",json_str);
     parse_json(json_str);
     //list_test(&paired_dev_list);
+}
+
+// str to hex
+void str_to_hex(char *str,uint8_t *hex)
+{
+    char *p = str;
+    int i = 0;
+    while(*p != '\0')
+    {
+        if(*p == ':')
+        {
+            p++;
+            continue;
+        }
+        hex[i] = strtol(p,&p,16);
+        i++;
+    }
+}
+
+//hex to str
+void hex_to_str(uint8_t *hex,char *str)
+{
+    char *p = str;
+    for(int i = 0;i < 6;i++)
+    {
+        sprintf(p,"%02x:",hex[i]);
+        p += 3;
+    }
+    *(p - 1) = '\0';
 }
 
 int main(int argc, char const *argv[])
@@ -247,8 +282,9 @@ int main(int argc, char const *argv[])
     list_foreach(paired_dev_list,get_device_info,NULL);
     scanf("%s",input_data);
     log_hexdump("input data",input_data,strlen(input_data));
+    // change dev seq
     list_foreach(paired_dev_list,change_dev_seq,input_data);
-    
     list_foreach(paired_dev_list,get_device_info,input_data);
     // test commit
+    
 }

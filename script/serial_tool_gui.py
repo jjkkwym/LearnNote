@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+<<<<<<< Updated upstream
 from http.client import NON_AUTHORITATIVE_INFORMATION
 from pickle import TRUE
 import sys
@@ -16,6 +17,23 @@ from serial.tools.list_ports import comports
 import serial
 
 
+=======
+import datetime
+import sys
+import threading
+
+import serial
+from PySide6.QtCore import QObject, Signal, Slot
+from PySide6.QtGui import QColor, QFont, QIcon
+from PySide6.QtNetwork import (QNetworkAccessManager, QNetworkReply,
+                               QNetworkRequest)
+from PySide6.QtWidgets import (QApplication, QComboBox, QHBoxLayout, QLabel,
+                               QLineEdit, QListView, QListWidget, QMessageBox,
+                               QPushButton, QTextBrowser, QVBoxLayout, QWidget)
+from serial.tools.list_ports import comports
+
+import serial_tool
+>>>>>>> Stashed changes
 class serial_list_combox(QComboBox):
     def __init__(self):
         super().__init__()
@@ -41,12 +59,24 @@ class serial_list_combox(QComboBox):
         for n, (port, desc, hwid) in enumerate(sorted(comports()), 1):
             if ser_port == desc:
                 return port
+<<<<<<< Updated upstream
         return None                    
 
 
 class serial_tool(QWidget):
     def __init__(self):
         super().__init__()
+=======
+        return None
+        
+class serial_tool_gui(QWidget):
+    
+   
+    
+    def __init__(self):
+        super().__init__()
+        self.ser_tool = serial_tool.Serial_tool()
+>>>>>>> Stashed changes
         self.init_ui()
         self.port = None
         self.serial = None
@@ -80,9 +110,15 @@ class serial_tool(QWidget):
                                         "QPushButton:hover{background-color:rgb(0,0,0);color:rgb(255,255,255);}")
         self.port_button.setFont(QFont('Consolas', 10))
         self.port_button.setText('open')
+<<<<<<< Updated upstream
         self.port_button.setToolTip('选择串口')
         self.port_button.setStatusTip('选择串口')
         self.port_button.setWhatsThis('选择串口')
+=======
+        self.port_button.setToolTip('select')
+        self.port_button.setStatusTip('select')
+        self.port_button.setWhatsThis('select')
+>>>>>>> Stashed changes
         self.port_button.setShortcut('Ctrl+P')
         self.port_button.setShortcutEnabled(True)
         self.port_button.setIcon(QIcon('port.png'))
@@ -123,6 +159,7 @@ class serial_tool(QWidget):
         self.cmd_list.setSpacing(5)
         self.cmd_list.itemClicked.connect(self.cmd_list_clicked)
 
+<<<<<<< Updated upstream
         self.layout_main = QHBoxLayout()
         self.layout = QVBoxLayout()
 
@@ -130,21 +167,41 @@ class serial_tool(QWidget):
         self.layout1.addWidget(self.port_label)
         self.layout1.addWidget(self.port_list)
         self.layout1.addWidget(self.port_button)
+=======
+        self.layout_root = QHBoxLayout()
+        self.layout = QVBoxLayout()
+
+        self.layout_show = QHBoxLayout()
+        self.layout_show.addWidget(self.port_label)
+        self.layout_show.addWidget(self.port_list)
+        self.layout_show.addWidget(self.port_button)
+>>>>>>> Stashed changes
         
         
         self.layout2 = QHBoxLayout()
         self.layout2.addWidget(self.line)
         self.layout2.addWidget(self.button)
     
+<<<<<<< Updated upstream
         self.layout.addLayout(self.layout1)
+=======
+        self.layout.addLayout(self.layout_show)
+>>>>>>> Stashed changes
         self.layout.addWidget(self.text_browser)
         self.layout.addLayout(self.layout2)
         # self.layout.addWidget(self.line)
         # self.layout.addWidget(self.button)
+<<<<<<< Updated upstream
         self.layout_main.addLayout(self.layout)
         self.layout_main.addWidget(self.cmd_list)
 
         self.setLayout(self.layout_main)
+=======
+        self.layout_root.addLayout(self.layout)
+        self.layout_root.addWidget(self.cmd_list)
+
+        self.setLayout(self.layout_root)
+>>>>>>> Stashed changes
     
     def cmd_list_clicked(self):
         print('cmd_list_clicked')
@@ -168,12 +225,23 @@ class serial_tool(QWidget):
 
     @Slot()
     def update_port_list(self):
+<<<<<<< Updated upstream
         self.port_list.clear()
         for n, (port, desc, hwid) in enumerate(sorted(comports()), 1):
             print(port, desc, hwid)
             self.port_list.addItem(desc)
 
             self.port_list.setCurrentIndex(n)
+=======
+        port_list = self.ser_tool.list_port()
+        
+        self.port_list.clear()
+        for (port, desc, hwid) in port_list:
+            print(port, desc, hwid)
+            self.port_list.addItem(desc)
+
+            #self.port_list.setCurrentIndex(n)
+>>>>>>> Stashed changes
     
     @Slot()
     def port_button_clicked(self):
@@ -251,8 +319,16 @@ if __name__ == "__main__":
     #创建窗口
     app = QApplication(sys.argv)
     
+<<<<<<< Updated upstream
     mywidget = serial_tool()
     mywidget.show()
     
     app.exec()
     #win.setWindowFlags(Qt.FramelessWindowHint)
+=======
+    mywidget = serial_tool_gui()
+    mywidget.show()
+    
+    app.exec()
+    #win.setWindowFlags(Qt.FramelessWindowHint)
+>>>>>>> Stashed changes
