@@ -26,8 +26,8 @@ typedef struct at_cmd_t
 typedef struct
 {
 #define AT_CMD_PARAMS_MAX_NUM 10
-#define AT_CMD_HEADER "AT+B"
-#define AT_CMD_SEPARATOR ' '
+#define AT_CMD_SEPARATOR_HEADER '+'
+#define AT_CMD_SEPARATOR_CMD    '='
 #define AT_CMD_SEPARATOR_PARAMS ','
 
     char *header;
@@ -161,6 +161,7 @@ char *at_cmd_parser_delim(parse_buffer_t *buffer, char delim)
                 length = ptr - buffer_at_offset(buffer);
                 ret = malloc(length + sizeof(""));
                 memcpy(ret, buffer_at_offset(buffer), length);
+                //memcpy_s(ret, buffer_at_offset(buffer), length);
                 ret[length] = '\0';
                 buffer->offset += length + 1;
                 return ret;
@@ -169,11 +170,6 @@ char *at_cmd_parser_delim(parse_buffer_t *buffer, char delim)
         }     
     }
     return NULL;
-}
-
-void at_cmd_parser_new(at_cmd_parser_t *parser, char *cmd_str)
-{
-    
 }
 
 int at_cmd_parser(at_cmd_parser_t *parser, char *cmd_str)
@@ -186,13 +182,13 @@ int at_cmd_parser(at_cmd_parser_t *parser, char *cmd_str)
     buffer.length = strlen(cmd_str);
     buffer.offset = 0;
 
-    parser->header = at_cmd_parser_delim(&buffer, ' ');
+    parser->header = at_cmd_parser_delim(&buffer, AT_CMD_SEPARATOR_HEADER);
     if (parser->header == NULL)
     {
         return -1;
     }
 
-    parser->cmd = at_cmd_parser_delim(&buffer, ' ');
+    parser->cmd = at_cmd_parser_delim(&buffer, AT_CMD_SEPARATOR_CMD);
     if (parser->cmd == NULL)
     {
         //if parse fail,the cmd with no params
@@ -211,7 +207,7 @@ int at_cmd_parser(at_cmd_parser_t *parser, char *cmd_str)
 
     for (int i = 0; i < AT_CMD_PARAMS_MAX_NUM; i++)
     {
-        if ((parser->params[i] = at_cmd_parser_delim(&buffer, ',')) == NULL)
+        if ((parser->params[i] = at_cmd_parser_delim(&buffer, AT_CMD_SEPARATOR_PARAMS)) == NULL)
         {
             last_param_len = buffer.length - buffer.offset;
             parser->params[i] = malloc(last_param_len + sizeof(""));
@@ -239,7 +235,6 @@ void at_cmd_parser_free(at_cmd_parser_t *parser)
     }
     for (int i = 0; i < parser->params_num; i++)
     {
-        printf("i:%d,%p\n", i,parser->params[i]);
         if (parser->params[i])
         {
             free(parser->params[i]);
@@ -361,19 +356,19 @@ int main(int argc, char const *argv[])
     at_cmd_init();
     printf("%s \n", str(TEST1));
     test_parse_params();
-    sleep(100);
-    test_at_cmd_parser("AT+B TEST 1,2,3,4,5,6,7,8,9,10,11");
-    test_at_cmd_parser("AT+B TEST 1,2,3,4,5,6,7,8,9,10");
-    test_at_cmd_parser("AT+B TEST 1,2,3,4,5,6,7,8,9");
-    test_at_cmd_parser("AT+B TEST 1,2,3,4,5,6,7,8");
-    test_at_cmd_parser("AT+B TEST 1,2,3,4,5,6,");
-    test_at_cmd_parser("AT+B TEST 1,2,3,4,5");
-    test_at_cmd_parser("AT+B TEST 1,2,3,4");
-    test_at_cmd_parser("AT+B TEST&&");
-    test_at_cmd_parser("AT+B TEST");
-    test_at_cmd_parser("AT+B,TEST");
+    test_at_cmd_parser("AT+TEST=1,2,3,4,5,6,7,8,9,10,11");
+    test_at_cmd_parser("AT+TEST=1,2,3,4,5,6,7,8,9,10");
+    test_at_cmd_parser("AT+TEST=1,2,3,4,5,6,7,8,9");
+    test_at_cmd_parser("AT+TEST=1,2,3,4,5,6,7,8");
+    test_at_cmd_parser("AT+TEST=1,2,3,4,5,6,");
+    test_at_cmd_parser("AT+TEST=1,2,3,4,5");
+    test_at_cmd_parser("AT+TEST=1,2,3,4");
+    test_at_cmd_parser("AT+TEST&&");
+    test_at_cmd_parser("AT+TEST");
+    test_at_cmd_parser("AT+TEST");
     test_at_cmd_parser("AT+BTEST");
     test_at_cmd_parser("TEST");
+    sleep(100);
     for(int i = 0;i < 100000;i++)
     {
         test_at_cmd_parser("AT+B TEST 1,2,3,4,123,4224,2424,42,42,24,42,42");
