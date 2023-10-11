@@ -1,2 +1,3 @@
-# bettre_coder
-code collection
+# LearnNote
+
+This is a LearnNote
