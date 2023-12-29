@@ -8,7 +8,46 @@ map方法
 - selection sort(选择排序)
 - insertion sort(插入排序)
 - merge sort(归并排序)
-- quick sort(快速排序)
+### quick sort(快速排序)
+#include <iostream>
+using namespace std;
+
+// 快速排序
+void quick_sort(int arr[], int left, int right) {
+    if (left >= right) return;
+    
+    int pivot = arr[left];  // 基准值
+    int i = left + 1, j = right;
+    
+    while (i <= j) {
+        while (i <= j && arr[i] < pivot) i++;
+        while (i <= j && arr[j] > pivot) j--;
+        
+        if (i < j) swap(arr[i++], arr[j--]);
+    }
+    swap(arr[left], arr[j]);
+    
+    quick_sort(arr, left, j - 1);
+    quick_sort(arr, j + 1, right);
+}
+
+int main() {
+    int arr[] = {4, 5, 1, 3, 2};
+    int n = sizeof(arr) / sizeof(arr[0]);
+
+    quick_sort(arr, 0, n - 1);
+
+    for (int i = 0; i < n; i++) {
+        cout << arr[i] << " ";
+    }
+    return 0;
+}
+在这个实现中，我们首先选择数组的第一个元素作为基准值。然后通过两个指针 i 和 j 分别从数组的两端向中间扫描，将小于基准值的元素放到左边，大于基准值的元素放到右边。
+
+当 i 和 j 相遇时，将基准值和 arr[j] 进行交换，使得基准值左侧的元素都小于基准值，右侧的元素都大于等于基准值。然后将数组分成两部分，对左右两部分分别进行递归排序。
+
+快速排序的时间复杂度为O(nlogn)，空间复杂度为O(logn)。
+
 - heap sort(堆排序)
 - bucket sort(桶排序)
 - radix sort(基数排序)
